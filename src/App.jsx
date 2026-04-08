@@ -1,34 +1,46 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
-import { TextField, Box, Button } from "@mui/material";
 
-const getZodiacSign = (dateString) => {
-  if (!dateString) return null;
-  const d = new Date(dateString);
-  const day = d.getDate();
-  const month = d.getMonth() + 1;
+const getZodiacSign = (day, month) => {
+  const d = Number(day);
+  const m = Number(month);
+  if (!d || !m) return null;
 
-  if ((month === 3 && day >= 21) || (month === 4 && day <= 19)) return "Aries";
-  if ((month === 4 && day >= 20) || (month === 5 && day <= 20)) return "Taurus";
-  if ((month === 5 && day >= 21) || (month === 6 && day <= 20)) return "Gemini";
-  if ((month === 6 && day >= 21) || (month === 7 && day <= 22)) return "Cancer";
-  if ((month === 7 && day >= 23) || (month === 8 && day <= 22)) return "Leo";
-  if ((month === 8 && day >= 23) || (month === 9 && day <= 22)) return "Virgo";
-  if ((month === 9 && day >= 23) || (month === 10 && day <= 22)) return "Libra";
-  if ((month === 10 && day >= 23) || (month === 11 && day <= 21))
-    return "Scorpio";
-  if ((month === 11 && day >= 22) || (month === 12 && day <= 21))
-    return "Sagittarius";
-  if ((month === 12 && day >= 22) || (month === 1 && day <= 19))
-    return "Capricorn";
-  if ((month === 1 && day >= 20) || (month === 2 && day <= 18))
-    return "Aquarius";
-  if ((month === 2 && day >= 19) || (month === 3 && day <= 20)) return "Pisces";
+  if ((m === 3 && d >= 21) || (m === 4 && d <= 19)) return "Aries";
+  if ((m === 4 && d >= 20) || (m === 5 && d <= 20)) return "Taurus";
+  if ((m === 5 && d >= 21) || (m === 6 && d <= 20)) return "Gemini";
+  if ((m === 6 && d >= 21) || (m === 7 && d <= 22)) return "Cancer";
+  if ((m === 7 && d >= 23) || (m === 8 && d <= 22)) return "Leo";
+  if ((m === 8 && d >= 23) || (m === 9 && d <= 22)) return "Virgo";
+  if ((m === 9 && d >= 23) || (m === 10 && d <= 22)) return "Libra";
+  if ((m === 10 && d >= 23) || (m === 11 && d <= 21)) return "Scorpio";
+  if ((m === 11 && d >= 22) || (m === 12 && d <= 21)) return "Sagittarius";
+  if ((m === 12 && d >= 22) || (m === 1 && d <= 19)) return "Capricorn";
+  if ((m === 1 && d >= 20) || (m === 2 && d <= 18)) return "Aquarius";
+  if ((m === 2 && d >= 19) || (m === 3 && d <= 20)) return "Pisces";
   return null;
 };
+
+const getDaysInMonth = (month) => {
+  const m = Number(month);
+  if (!m || m < 1 || m > 12) return 31;
+  return new Date(2020, m, 0).getDate();
+};
+
+const monthOptions = [
+  { value: "1", label_en: "January", label_mm: "ဇန်နဝါရီ" },
+  { value: "2", label_en: "February", label_mm: "ဖေဖော်ဝါရီ" },
+  { value: "3", label_en: "March", label_mm: "မတ်" },
+  { value: "4", label_en: "April", label_mm: "ဧပြီ" },
+  { value: "5", label_en: "May", label_mm: "မေ" },
+  { value: "6", label_en: "June", label_mm: "ဇွန်" },
+  { value: "7", label_en: "July", label_mm: "ဇူလိုင်" },
+  { value: "8", label_en: "August", label_mm: "ဩဂုတ်" },
+  { value: "9", label_en: "September", label_mm: "စက်တင်ဘာ" },
+  { value: "10", label_en: "October", label_mm: "အောက်တိုဘာ" },
+  { value: "11", label_en: "November", label_mm: "နိုဝင်ဘာ" },
+  { value: "12", label_en: "December", label_mm: "ဒီဇင်ဘာ" },
+];
 
 const AnimatedIcon = ({ children }) => (
   <motion.div
@@ -59,7 +71,8 @@ const GlobeIcon = () => (
 
 const zodiacData = [
   {
-    name: "Aries",
+    name_en: "Aries",
+    name_mm: "မိဿရာသီ",
     icon: "♈",
     personality_en:
       "Bold, ambitious, and a natural leader. They are energetic but can be impulsive.",
@@ -73,7 +86,8 @@ const zodiacData = [
       "ပြိုင်ဆိုင်မှုပြင်းထန်ပြီး အလုပ်ကြိုးစားသည်။ ကိုယ်ပိုင်လုပ်ငန်းနှင့် တက်ကြွရသော အလုပ်မျိုးနှင့် သင့်တော်သည်။",
   },
   {
-    name: "Taurus",
+    name_en: "Taurus",
+    name_mm: "ပြိဿရာသီ",
     icon: "♉",
     personality_en:
       "Reliable, patient, and loves luxury. They can be very stubborn.",
@@ -88,7 +102,8 @@ const zodiacData = [
       "ငွေကြေးစီမံခန့်ခွဲမှု ကောင်းမွန်သည်။ တည်ငြိမ်အေးချမ်းသော အလုပ်များကို နှစ်သက်သည်။",
   },
   {
-    name: "Gemini",
+    name_en: "Gemini",
+    name_mm: "မေထုန်ရာသီ",
     icon: "♊",
     personality_en:
       "Curious, communicative, and versatile. Often seen as 'two-faced' but actually just adaptable.",
@@ -103,7 +118,8 @@ const zodiacData = [
       "မီဒီယာ၊ အရောင်းနှင့် စာရေးသားခြင်းတွင် ထူးချွန်သည်။ လူမှုရေးနယ်ပယ်တွင် မျက်နှာပွင့်သည်။",
   },
   {
-    name: "Cancer",
+    name_en: "Cancer",
+    name_mm: "ကရကဋ်ရာသီ",
     icon: "♋",
     personality_en:
       "Emotional, nurturing, and highly intuitive. Very protective of their shell.",
@@ -117,7 +133,8 @@ const zodiacData = [
       "သူနာပြုစုခြင်း၊ ဝန်ဆောင်မှုလုပ်ငန်းနှင့် အိမ်ခြံမြေလုပ်ငန်းများတွင် အောင်မြင်တတ်သည်။",
   },
   {
-    name: "Leo",
+    name_en: "Leo",
+    name_mm: "သိဟ်ရာသီ",
     icon: "♌",
     personality_en:
       "Confident, generous, and loves the spotlight. Can be a bit dramatic.",
@@ -131,7 +148,8 @@ const zodiacData = [
       "မွေးရာပါခေါင်းဆောင်များဖြစ်သည်။ အနုပညာ၊ စီမံခန့်ခွဲမှုနှင့် နိုင်ငံရေးတွင် ထူးချွန်သည်။",
   },
   {
-    name: "Virgo",
+    name_en: "Virgo",
+    name_mm: "ကန်ရာသီ",
     icon: "♍",
     personality_en:
       "Practical, analytical, and perfectionist. They are very helpful.",
@@ -147,7 +165,8 @@ const zodiacData = [
       "စနစ်ကျသူများဖြစ်သည်။ တည်းဖြတ်သူ၊ သုတေသီနှင့် ကျန်းမာရေးဝန်ထမ်းအဖြစ် အောင်မြင်သည်။",
   },
   {
-    name: "Libra",
+    name_en: "Libra",
+    name_mm: "တူရာသီ",
     icon: "♎",
     personality_en: "Diplomatic, fair, and artistic. They hate conflict.",
     personality_mm:
@@ -160,7 +179,8 @@ const zodiacData = [
       "ဥပဒေ၊ ဒီဇိုင်းနှင့် ပြည်သူ့ဆက်ဆံရေးလုပ်ငန်းများတွင် ထူးချွန်သည်။",
   },
   {
-    name: "Scorpio",
+    name_en: "Scorpio",
+    name_mm: "ဗြိစ္ဆာရာသီ",
     icon: "♏",
     personality_en:
       "Intense, mysterious, and powerful. They have deep emotions.",
@@ -174,7 +194,8 @@ const zodiacData = [
       "စုံထောက်၊ စိတ်ပညာရှင် သို့မဟုတ် ရင်းနှီးမြှုပ်နှံသူအဖြစ် အောင်မြင်တတ်သည်။",
   },
   {
-    name: "Sagittarius",
+    name_en: "Sagittarius",
+    name_mm: "ဓနုရာသီ",
     icon: "♐",
     personality_en:
       "Adventurous, optimistic, and philosophical. They love freedom.",
@@ -188,7 +209,8 @@ const zodiacData = [
       "ခရီးသွားလုပ်ငန်း၊ ပညာရေးနှင့် စာအုပ်ထုတ်ဝေရေးတို့တွင် အောင်မြင်တတ်သည်။",
   },
   {
-    name: "Capricorn",
+    name_en: "Capricorn",
+    name_mm: "မကာရရာသီ",
     icon: "♑",
     personality_en:
       "Disciplined, hardworking, and patient. They are very practical.",
@@ -202,7 +224,8 @@ const zodiacData = [
       "စီးပွားရေး၊ ငွေကြေးနှင့် အဆောက်အဦးပိုင်းဆိုင်ရာ ခေါင်းဆောင်မှုနေရာများတွင် ထူးချွန်သည်။",
   },
   {
-    name: "Aquarius",
+    name_en: "Aquarius",
+    name_mm: "ကုံရာသီ",
     icon: "♒",
     personality_en:
       "Original, humanitarian, and independent. Sometimes seen as eccentric.",
@@ -216,7 +239,8 @@ const zodiacData = [
       "အမြော်အမြင်ရှိသူများဖြစ်ပြီး နည်းပညာနှင့် လူမှုရေးလုပ်ငန်းများတွင် အောင်မြင်သည်။",
   },
   {
-    name: "Pisces",
+    name_en: "Pisces",
+    name_mm: "မိန်ရာသီ",
     icon: "♓",
     personality_en:
       "Compassionate, artistic, and dreamy. They are very sensitive.",
@@ -230,7 +254,8 @@ const zodiacData = [
 ];
 
 export default function ZodiacApp() {
-  const [birthDate, setBirthDate] = useState("");
+  const [birthDay, setBirthDay] = useState("");
+  const [birthMonth, setBirthMonth] = useState("");
   const [theme, setTheme] = useState("dark");
   const [lang, setLang] = useState("en");
 
@@ -246,11 +271,19 @@ export default function ZodiacApp() {
     localStorage.setItem("lang", lang);
   }, [theme, lang]);
 
-  const detectedSign = getZodiacSign(birthDate);
+  useEffect(() => {
+    if (!birthMonth) return;
+    const maxDay = getDaysInMonth(birthMonth);
+    if (birthDay && Number(birthDay) > maxDay) {
+      setBirthDay(String(maxDay));
+    }
+  }, [birthMonth, birthDay]);
+
+  const detectedSign = getZodiacSign(birthDay, birthMonth);
   const isDark = theme === "dark";
 
   const filteredData = detectedSign
-    ? zodiacData.filter((z) => z.name === detectedSign)
+    ? zodiacData.filter((z) => z.name_en === detectedSign)
     : zodiacData;
 
   return (
@@ -278,109 +311,60 @@ export default function ZodiacApp() {
           </div>
         </div>
 
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <div className="mb-8 flex gap-3 items-center">
-            <Box sx={{ flex: 1 }}>
-              <DatePicker
-                label={lang === "en" ? "Select Your Birth Date" : "သင်၏ မွေးနေ့ကို ရွေးချယ်ပါ"}
-                value={birthDate ? dayjs(birthDate) : null}
-                onChange={(newValue) =>
-                  setBirthDate(newValue ? newValue.format("YYYY-MM-DD") : "")
-                }
-                slotProps={{
-                  textField: {
-                    fullWidth: true,
-                    variant: "outlined",
-                    InputLabelProps: {
-                      sx: {
-                        color: isDark ? "#9ca3af" : "#6b7280",
-                        "&.Mui-focused": {
-                          color: "#a855f7",
-                        },
-                      },
-                    },
-                    sx: {
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: "12px",
-                        backgroundColor: isDark ? "#374151" : "#ffffff",
-                        color: isDark ? "#ffffff" : "#000000",
-                        fontSize: "1rem",
-                        transition: "all 0.3s ease",
-                        "& fieldset": {
-                          borderColor: isDark ? "#6b7280" : "#e0e0e0",
-                        },
-                        "&:hover fieldset": {
-                          borderColor: isDark ? "#a855f7" : "#9333ea",
-                        },
-                        "&.Mui-focused fieldset": {
-                          borderColor: "#a855f7",
-                          borderWidth: "2px",
-                        },
-                      },
-                      "& .MuiOutlinedInput-input": {
-                        color: isDark ? "#ffffff" : "#000000",
-                      },
-                      "& .MuiInputBase-input::placeholder": {
-                        opacity: 0.7,
-                        color: isDark ? "#9ca3af" : "#6b7280",
-                      },
-                      "& .MuiInputAdornment-positionEnd svg": {
-                        color: isDark ? "#a855f7" : "#9333ea",
-                      },
-                      "& .MuiInputBase-input-Mui-disabled": {
-                        WebkitTextFillColor: isDark ? "#ffffff" : "#000000",
-                      },
-                    },
-                  },
-                  popper: {
-                    sx: {
-                      "& .MuiPaper-root": {
-                        backgroundColor: isDark ? "#1f2937" : "#ffffff",
-                        color: isDark ? "#ffffff" : "#000000",
-                        backgroundImage: "none",
-                      },
-                      "& .MuiCalendarPicker-root": {
-                        backgroundColor: isDark ? "#1f2937" : "#ffffff",
-                      },
-                      "& .MuiPickersDay-root": {
-                        color: isDark ? "#ffffff" : "#000000",
-                      },
-                      "& .MuiPickersDay-root.Mui-selected": {
-                        backgroundColor: "#a855f7",
-                        color: "#ffffff",
-                        "&:hover": {
-                          backgroundColor: "#9333ea",
-                        },
-                      },
-                      "& .MuiPickersDay-root:hover": {
-                        backgroundColor: isDark ? "rgba(168, 85, 247, 0.3)" : "rgba(147, 51, 234, 0.1)",
-                      },
-                      "& .MuiDayCalendar-header span": {
-                        color: isDark ? "#e5e7eb" : "#374151",
-                      },
-                      "& .MuiPickersToolbar-root": {
-                        backgroundColor: "#a855f7",
-                        color: "#ffffff",
-                      },
-                    },
-                  },
-                }}
-              />
-            </Box>
+        <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end">
+          <div className="grid flex-1 gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold">
+                {lang === "en" ? "Day" : "နေ့"}
+              </label>
+              <select
+                value={birthDay}
+                onChange={(e) => setBirthDay(e.target.value)}
+                className={`w-full rounded-2xl border px-4 py-3 text-base ${isDark ? "bg-slate-900 border-slate-700 text-white" : "bg-white border-slate-300 text-slate-900"}`}
+              >
+                <option value="">{lang === "en" ? "Select Day" : "နေ့ရွေးပါ"}</option>
+                {Array.from({ length: getDaysInMonth(birthMonth) }, (_, idx) => idx + 1).map((day) => (
+                  <option key={day} value={day}>
+                    {day}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-            <button
-              onClick={() => setBirthDate("")}
-              className="px-6 py-3 rounded-xl bg-red-500 hover:bg-red-600 text-white font-semibold transition transform hover:scale-105 active:scale-95"
-            >
-              Reset
-            </button>
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold">
+                {lang === "en" ? "Month" : "လ"}
+              </label>
+              <select
+                value={birthMonth}
+                onChange={(e) => setBirthMonth(e.target.value)}
+                className={`w-full rounded-2xl border px-4 py-3 text-base ${isDark ? "bg-slate-900 border-slate-700 text-white" : "bg-white border-slate-300 text-slate-900"}`}
+              >
+                <option value="">{lang === "en" ? "Select Month" : "လရွေးပါ"}</option>
+                {monthOptions.map((month) => (
+                  <option key={month.value} value={month.value}>
+                    {lang === "en" ? month.label_en : month.label_mm}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-        </LocalizationProvider>
+
+          <button
+            onClick={() => {
+              setBirthDay("");
+              setBirthMonth("");
+            }}
+            className="px-6 py-3 rounded-xl bg-red-500 hover:bg-red-600 text-white font-semibold transition transform hover:scale-105 active:scale-95"
+          >
+            Reset
+          </button>
+        </div>
 
         {detectedSign && (
-          <div className="mb-6 text-center font-semibold text-green-400 text-lg">
+          <div className="mb-6 text-center font-semibold text-green-600 text-lg">
             {lang === "en" ? "Your Zodiac Sign:" : "သင်၏ ရာသီခွင်:"}{" "}
-            {detectedSign}
+            {lang === "en" ? detectedSign : filteredData[0]?.name_mm}
           </div>
         )}
 
@@ -399,7 +383,7 @@ export default function ZodiacApp() {
                     <span className="text-2xl">{z.icon}</span>
                   </AnimatedIcon>
                   <h2 className="text-xl font-semibold text-purple-400">
-                    {z.name}
+                    {lang === "en" ? z.name_en : z.name_mm}
                   </h2>
                 </div>
 
