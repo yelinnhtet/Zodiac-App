@@ -315,14 +315,14 @@ export default function ZodiacApp() {
           <div className="grid flex-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <label className="block text-sm font-semibold">
-                {lang === "en" ? "Day" : "နေ့"}
+                {lang === "en" ? "Birth Day" : "မွေးနေ့"}
               </label>
               <select
                 value={birthDay}
                 onChange={(e) => setBirthDay(e.target.value)}
                 className={`w-full rounded-2xl border px-4 py-3 text-base ${isDark ? "bg-slate-900 border-slate-700 text-white" : "bg-white border-slate-300 text-slate-900"}`}
               >
-                <option value="">{lang === "en" ? "Select Day" : "နေ့ရွေးပါ"}</option>
+                <option value="">{lang === "en" ? "Select Birth Day" : "မွေးနေ့ရွေးပါ"}</option>
                 {Array.from({ length: getDaysInMonth(birthMonth) }, (_, idx) => idx + 1).map((day) => (
                   <option key={day} value={day}>
                     {day}
@@ -333,14 +333,14 @@ export default function ZodiacApp() {
 
             <div className="space-y-2">
               <label className="block text-sm font-semibold">
-                {lang === "en" ? "Month" : "လ"}
+                {lang === "en" ? "Birth Month" : "မွေးလ"}
               </label>
               <select
                 value={birthMonth}
                 onChange={(e) => setBirthMonth(e.target.value)}
                 className={`w-full rounded-2xl border px-4 py-3 text-base ${isDark ? "bg-slate-900 border-slate-700 text-white" : "bg-white border-slate-300 text-slate-900"}`}
               >
-                <option value="">{lang === "en" ? "Select Month" : "လရွေးပါ"}</option>
+                <option value="">{lang === "en" ? "Select Birth Month" : "မွေးလရွေးပါ"}</option>
                 {monthOptions.map((month) => (
                   <option key={month.value} value={month.value}>
                     {lang === "en" ? month.label_en : month.label_mm}
